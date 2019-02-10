@@ -45,3 +45,39 @@ func (r *TextPlainResponse) out(code int, v interface{}) {
 func (r *TextPlainResponse) OK(v interface{}) {
 	r.out(http.StatusOK, v)
 }
+
+func (r *TextPlainResponse) Created(v interface{}) {
+	r.out(http.StatusCreated, v)
+}
+
+func (r *TextPlainResponse) NoContent(v interface{}) {
+	r.out(http.StatusNoContent, v)
+}
+
+func (r *TextPlainResponse) NotModified(v interface{}) {
+	r.out(http.StatusNotModified, v)
+}
+
+func (r *TextPlainResponse) BadRequest(v interface{}) {
+	r.out(http.StatusBadRequest, v)
+}
+
+func (r *TextPlainResponse) Unauthorized(v interface{}) {
+	r.out(http.StatusUnauthorized, v)
+}
+
+func (r *TextPlainResponse) Forbidden(v interface{}) {
+	r.out(http.StatusForbidden, v)
+}
+
+func (r *TextPlainResponse) NotFound(v interface{}) {
+	r.out(http.StatusNotFound, v)
+}
+
+func (r *TextPlainResponse) MethodNotAllowed(v interface{}) {
+	r.out(http.StatusMethodNotAllowed, v)
+}
+
+func (r *TextPlainResponse) InternalServerError(v interface{}) {
+	r.out(http.StatusInternalServerError, v)
+}

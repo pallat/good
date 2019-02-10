@@ -6,7 +6,9 @@ import (
 
 // Handler
 func hello(c good.Context) {
-	c.OK("Hello, World!")
+	c.OK(map[string]string{
+		"message": "Hello, World!",
+	})
 }
 
 func main() {
@@ -14,7 +16,7 @@ func main() {
 	g := good.New()
 
 	r := g.Rule()
-	r.ContentType(good.TextPlain)
+	r.ContentType(good.ApplicationJSON)
 	r.GET("/", hello)
 
 	// Start server

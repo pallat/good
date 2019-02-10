@@ -48,7 +48,8 @@ import (
 )
 
 const (
-	TextPlain = "text/plain"
+	TextPlain       = "text/plain"
+	ApplicationJSON = "application/json"
 )
 
 type Context interface {
@@ -139,6 +140,9 @@ func (r *Rule) handler() []*Handler {
 func (r *Rule) ContentType(ct string) {
 	if ct == TextPlain {
 		r.response = &TextPlainResponse{}
+	}
+	if ct == ApplicationJSON {
+		r.response = &AppJSONResponse{}
 	}
 }
 

@@ -20,5 +20,5 @@ func main() {
 	r.GET("/", hello)
 
 	// Start server
-	g.Go(8888)
+	g.On(8888)
 }

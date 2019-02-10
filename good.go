@@ -113,7 +113,7 @@ func (g *Goods) handler() http.Handler {
 	return mux
 }
 
-func (g *Goods) Go(port int) error {
+func (g *Goods) On(port int) error {
 	addr := fmt.Sprintf(":%s", strconv.Itoa(port))
 	log.Println("serve on " + addr)
 	return http.ListenAndServe(addr, g.handler())

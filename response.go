@@ -31,7 +31,7 @@ func (r *TextPlainResponse) SetWriter(w http.ResponseWriter) {
 func (r *TextPlainResponse) OK(v interface{}) {
 	if s, ok := v.(string); ok {
 		r.w.WriteHeader(http.StatusOK)
-		r.w.Header().Set("Content-Type", "text/plain")
+		r.w.Header().Set("Content-Type", TextPlain)
 		io.WriteString(r.w, s)
 	}
 }

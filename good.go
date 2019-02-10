@@ -137,7 +137,7 @@ func (r *Rule) handler() []*Handler {
 }
 
 func (r *Rule) ContentType(ct string) {
-	if ct == "text/plain" {
+	if ct == TextPlain {
 		r.response = &TextPlainResponse{}
 	}
 }

@@ -6,9 +6,24 @@ import (
 
 // Handler
 func hello(c good.Context) {
-	c.OK(map[string]string{
-		"message": "Hello, World!",
-	})
+	c.OK("Hello, World!")
+}
+
+type request struct {
+	Name string
+	Age  int
+}
+
+func bind(c good.Context) {
+	var req request
+
+	err := c.Bind(&req)
+	if err != nil {
+		c.InternalServerError(err)
+		return
+	}
+
+	c.OK(req)
 }
 
 func main() {
@@ -17,7 +32,11 @@ func main() {
 
 	r := g.Rule()
 	r.ContentType(good.ApplicationJSON)
-	r.GET("/", hello)
+	r.POST("/a", bind)
+
+	rs := g.Rule()
+	rs.ContentType(good.TextPlain)
+	rs.GET("/", hello)
 
 	// Start server
 	g.On(8888)

@@ -1,6 +1,8 @@
 package good
 
-import "net/http"
+import (
+	"net/http"
+)
 
 type Route struct {
 	method string
@@ -10,6 +12,7 @@ type Route struct {
 
 type Rule struct {
 	response Responser
+	request  Requester
 	routes   []*Route
 }
 
@@ -18,6 +21,7 @@ func (r *Rule) handler() []*Handler {
 	for _, route := range r.routes {
 		h = append(h, &Handler{
 			Responser: r.response,
+			Requester: r.request,
 			path:      route.path,
 			method:    route.method,
 			h:         route.h,
@@ -29,9 +33,11 @@ func (r *Rule) handler() []*Handler {
 func (r *Rule) ContentType(ct string) {
 	if ct == TextPlain {
 		r.response = &TextPlainResponse{}
+		r.request = &AppJSONRequest{}
 	}
 	if ct == ApplicationJSON {
 		r.response = &AppJSONResponse{}
+		r.request = &AppJSONRequest{}
 	}
 }
 
@@ -49,4 +55,8 @@ func (r *Rule) Add(method, path string, h HandlerFunc) {
 
 func (r *Rule) GET(path string, h HandlerFunc) {
 	r.Add(http.MethodGet, path, h)
+}
+
+func (r *Rule) POST(path string, h HandlerFunc) {
+	r.Add(http.MethodPost, path, h)
 }

@@ -28,10 +28,20 @@ func (r *TextPlainResponse) SetWriter(w http.ResponseWriter) {
 	r.w = w
 }
 
-func (r *TextPlainResponse) OK(v interface{}) {
+func (r *TextPlainResponse) commit(code int, s string) {
+	r.w.WriteHeader(code)
+	r.w.Header().Set("Content-Type", TextPlain)
+	io.WriteString(r.w, s)
+}
+
+func (r *TextPlainResponse) out(code int, v interface{}) {
 	if s, ok := v.(string); ok {
-		r.w.WriteHeader(http.StatusOK)
-		r.w.Header().Set("Content-Type", TextPlain)
-		io.WriteString(r.w, s)
+		r.commit(code, s)
+	} else {
+		r.commit(http.StatusInternalServerError, "response not string")
 	}
+}
+
+func (r *TextPlainResponse) OK(v interface{}) {
+	r.out(http.StatusOK, v)
 }

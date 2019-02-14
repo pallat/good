@@ -1,9 +1,12 @@
 package good
 
 import (
+	"context"
 	"fmt"
 	"log"
 	"net/http"
+	"os"
+	"os/signal"
 	"strconv"
 	"time"
 
@@ -49,7 +52,7 @@ func (g *Goods) handler() http.Handler {
 	return mux
 }
 
-func (g *Goods) On(port int) error {
+func (g *Goods) On(port int) {
 	addr := fmt.Sprintf(":%s", strconv.Itoa(port))
 	log.Println("serve on " + addr)
 
@@ -61,16 +64,21 @@ func (g *Goods) On(port int) error {
 		MaxHeaderBytes: 1 << 20,
 	}
 
-	return g.Server.ListenAndServe()
+	func() {
+		log.Fatal(g.Server.ListenAndServe())
+	}()
+
+	g.GracefulShutdown()
 }
 
-// func (g *Goods) GracefulShutdown() {
-// 	quit := make(chan os.Signal)
-// 	signal.Notify(quit, os.Interrupt)
-// 	<-quit
-// 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
-// 	defer cancel()
-// 	if err := e.Shutdown(ctx); err != nil {
-// 		e.Logger.Fatal(err)
-// 	}
-// }
+func (g *Goods) GracefulShutdown() {
+	quit := make(chan os.Signal)
+	signal.Notify(quit, os.Interrupt)
+	<-quit
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+
+	if err := g.Server.Shutdown(ctx); err != nil {
+		log.Fatal(err)
+	}
+}

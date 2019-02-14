@@ -50,7 +50,7 @@ func (r *AppJSONRequest) Bind(v interface{}) error {
 	return json.Unmarshal(b, v)
 }
 
-type context struct {
+type asset struct {
 	w http.ResponseWriter
 	r *http.Request
 	Responser
@@ -60,5 +60,5 @@ type context struct {
 func NewContext(w http.ResponseWriter, r *http.Request, response Responser, request Requester) Context {
 	response.SetWriter(w)
 	request.SetRequest(r)
-	return &context{w: w, r: r, Responser: response, Requester: request}
+	return &asset{w: w, r: r, Responser: response, Requester: request}
 }

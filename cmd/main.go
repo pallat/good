@@ -29,6 +29,7 @@ func bind(c good.Context) {
 func main() {
 	// good instance
 	g := good.New()
+	// g.GracefulShutdown()
 
 	r := g.Rule()
 	r.ContentType(good.ApplicationJSON)

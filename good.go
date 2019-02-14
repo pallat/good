@@ -1,41 +1,3 @@
-/*
-Example:
-
-  package main
-
-  import (
-	"github.com/chonla/cotton/response"
-    "net/http"
-
-    "github.com/pallat/good/v1"
-    "github.com/pallat/good/v1/middleware"
-  )
-
-  // Handler
-  func hello(c good.Context) error {
-    return c.OK("Hello, World!")
-  }
-
-  func main() {
-    // good instance
-    g := good.New()
-
-    // Middleware
-    g.Use(middleware.Logger())
-    g.Use(middleware.Recover())
-    g.Use(middleware.GracefulShoutdown())
-
-    r := g.Rule()
-    r.ContentType(g.TextPlain)
-    r.GET("/", hello)
-
-    // Start server
-    g.Logger.Fatal(g.Start(":8888"))
-  }
-
-Learn more at https://good.odds.io
-*/
-
 package good
 
 import (
@@ -43,6 +5,7 @@ import (
 	"log"
 	"net/http"
 	"strconv"
+	"time"
 
 	"github.com/pallat/good/middleware"
 )
@@ -54,6 +17,7 @@ const (
 
 type Goods struct {
 	rules []*Rule
+	*http.Server
 }
 
 func New() *Goods {
@@ -88,5 +52,25 @@ func (g *Goods) handler() http.Handler {
 func (g *Goods) On(port int) error {
 	addr := fmt.Sprintf(":%s", strconv.Itoa(port))
 	log.Println("serve on " + addr)
-	return http.ListenAndServe(addr, g.handler())
+
+	g.Server = &http.Server{
+		Addr:           addr,
+		Handler:        g.handler(),
+		ReadTimeout:    10 * time.Second,
+		WriteTimeout:   10 * time.Second,
+		MaxHeaderBytes: 1 << 20,
+	}
+
+	return g.Server.ListenAndServe()
 }
+
+// func (g *Goods) GracefulShutdown() {
+// 	quit := make(chan os.Signal)
+// 	signal.Notify(quit, os.Interrupt)
+// 	<-quit
+// 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+// 	defer cancel()
+// 	if err := e.Shutdown(ctx); err != nil {
+// 		e.Logger.Fatal(err)
+// 	}
+// }
